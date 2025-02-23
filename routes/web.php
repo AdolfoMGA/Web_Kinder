@@ -36,4 +36,9 @@ Route::middleware([
     Route::get('/inicio', function(){
         return Inertia::render('Inicio');
     })->name('inicio');
+    
+    Route::get('/registro_a', function(){
+        return Inertia::render('Registro_alumnos');
+    })->name('registro_a');
+    
 });
