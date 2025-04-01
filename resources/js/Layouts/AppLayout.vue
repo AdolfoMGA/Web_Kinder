@@ -56,14 +56,17 @@ const logout = () => {
                                 <NavLink :href="route('estudiantes.index')" :active="route().current('estudiantes.index')">
                                     Estudiantes
                                 </NavLink>
-                                <NavLink :href="route('inicio')" :active="route().current('inicio')">
-                                    Salones
-                                </NavLink>
                                 <NavLink :href="route('grados.index')" :active="route().current('grados.index')">
                                     Grados
                                 </NavLink>
                                 <NavLink :href="route('grupos.index')" :active="route().current('grupos.index')">
                                     Grupos
+                                </NavLink>
+                                <NavLink :href="route('inicio')" :active="route().current('inicio')">
+                                    Salones
+                                </NavLink>
+                                <NavLink :href="route('docentes.index')" :active="route().current('docentes.index')">
+                                    Docentes
                                 </NavLink>
                                 
                                 

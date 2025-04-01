@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\EstudiantesController;
 use App\Http\Controllers\GradosController;
 use App\Http\Controllers\GruposController;
+use App\Http\Controllers\DocentesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,10 @@ Route::middleware([
         return Inertia::render('estudiantes');
     })->name('estudiantes');
 
+    Route::get('/docentes', function(){
+        return Inertia::render('docentes');
+    })->name('docentes');
+
 
 });
 
@@ -71,3 +76,7 @@ Route::put('/grupos/{grupo}', [GruposController::class, 'update'])->name('grupos
 Route::resource('estudiantes',EstudiantesController::class);
 Route::post('/estudiantes', [EstudiantesController::class, 'store'])->name('estudiantes.store');
 Route::put('/estudiantes/{estudiante}', [EstudiantesController::class, 'update'])->name('estudiantes.update');
+
+Route::resource('docentes',DocentesController::class);
+Route::post('/docentes', [DocentesController::class, 'store'])->name('docentes.store');
+Route::put('/docentes/{docente}', [DocentesController::class, 'update'])->name('docentes.update');

@@ -13,7 +13,6 @@ class Docente extends Model
         'nombre',
         'apellido_p',
         'apellido_m',
-        'parentesco_id',
     ];
 
     public function parentesco()
