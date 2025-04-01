@@ -1,90 +1,115 @@
-<template>
-    <AppLayout title="Registro de Alumnos">
-        <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-            <h2 class="text-2xl font-bold text-blue-600 mb-4">Datos de Alumno</h2>
-            <form @submit.prevent="submit" class="space-y-4">
-                <!-- Campo: Nombre -->
-                <div>
-                    <label class="block text-gray-700">Nombre</label>
-                    <input v-model="form.nombre" type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" />
-                </div>
-
-                <!-- Campo: Apellido Paterno -->
-                <div>
-                    <label class="block text-gray-700">Apellido Paterno</label>
-                    <input v-model="form.apellido_paterno" type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" />
-                </div>
-
-                <!-- Campo: Apellido Materno -->
-                <div>
-                    <label class="block text-gray-700">Apellido Materno</label>
-                    <input v-model="form.apellido_materno" type="text" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" />
-                </div>
-
-                <!-- Campo: Edad -->
-                <div>
-                    <label class="block text-gray-700">Edad</label>
-                    <input v-model="form.edad" type="number" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400" />
-                </div>
-
-                <!-- Campo: Grado -->
-                <div>
-                    <label class="block text-gray-700">Grado</label>
-                    <select v-model="form.grado_id" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                        <option value="">Seleccionar</option>
-                        <option v-for="grado in grados" :key="grado.id" :value="grado.id">{{ grado.nombre }}</option>
-                    </select>
-                </div>
-
-                <!-- Campo: Grupo -->
-                <div>
-                    <label class="block text-gray-700">Grupo</label>
-                    <select v-model="form.grupo_id" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                        <option value="">Seleccionar</option>
-                        <option v-for="grupo in grupos" :key="grupo.id" :value="grupo.id">{{ grupo.nombre }}</option>
-                    </select>
-                </div>
-
-                <!-- Campo: Docente -->
-                <div>
-                    <label class="block text-gray-700">Docente</label>
-                    <select v-model="form.docente_id" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                        <option value="">Seleccionar</option>
-                        <option v-for="docente in docentes" :key="docente.id" :value="docente.id">{{ docente.nombre }}</option>
-                    </select>
-                </div>
-
-                <!-- Botón de envío -->
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Registrar</button>
-            </form>
-        </div>
-    </AppLayout>
-</template>
-
 <script setup>
-import { useForm, usePage } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import Welcome from '@/Components/Welcome.vue';
 
-// Obtener los datos de grados, grupos y docentes desde el backend
-const { grados, grupos, docentes } = usePage().props;
-
-// Definir el formulario
-const form = useForm({
-    nombre: '',
-    apellido_paterno: '',
-    apellido_materno: '',
-    edad: '',
-    grado_id: null,
-    grupo_id: null,
-    docente_id: null,
-});
-
-// Enviar el formulario al backend
-const submit = () => {
-    form.post(route('registro.estudiante.store'));
-};
 </script>
 
-<style scoped>
-/* Aquí puedes agregar estilos específicos para esta vista si es necesario */
-</style>
+<template>
+    <AppLayout title="Inicio">
+        <template #header>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                ESCUELA MARÍA ELENA MONTES DE OCA
+            </h2>
+        </template>
+
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+
+                    <div v-for="(est, key) in estudiantes">
+                            Nombre: {{ est.nombre }}
+                            Apellido Paterno: {{ est.apellido_paterno }}
+                            Apellido Materno: {{ est.apellido_materno }}
+                            Edad: {{ est.edad }}
+                            Grado: {{ est.grado_id }}
+                            Grupo: {{ est.grupo_id }}
+                            Docente: {{ est.docente_id }}
+
+                            <button @click="editarestudiante(key)">Editar</button>
+                            <button @click="eliminarestudiante(est.id)">Eliminar</button>
+                    </div>
+
+                    <div>
+                        <input type="text" v-model="form.nombre">
+                        <input type="text" v-model="form.apellido_paterno">
+                        <input type="text" v-model="form.apellido_materno">
+                        <input type="number" v-model="form.edad">
+                        <input type="number" v-model="form.grado_id">
+                        <input type="number" v-model="form.grupo_id">
+                        <input type="number" v-model="form.docente_id">
+
+                        <button @click="guardarestudiante">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </AppLayout>
+
+</template>
+
+<script>
+export default {
+    props: {
+        estudiantes: {
+            type: Array,  
+            required: true  
+        }
+    },
+
+    mounted() {
+        console.log(this.estudiantes); 
+    },
+    data(){
+        return{
+            form:{
+                id:'',
+                nombre:'',
+                apellido_paterno:'',
+                apellido_materno:'',
+                edad: '',
+                grado_id:'',
+                grupo_id:'',
+                docente_id:'',
+            }
+        }
+    },
+    methods:{
+        guardarestudiante()
+        {
+            this.$inertia.post('/guardarestudiante',this.form);
+        },
+        eliminarestudiante(id)
+        {
+            this.$inertia.post('/eliminarestudiante',{id:id});
+        },
+        editarestudiante(key)
+        {
+            const est = this.estudiantes[key]; 
+            this.form.id = est.id;
+            this.form.nombre = est.nombre;
+            this.form.apellido_paterno = est.apellido_paterno;
+            this.form.apellido_materno = est.apellido_materno;
+            this.form.edad = est.edad;
+            this.form.grado_id = est.grado_id;
+            this.form.grupo_id = est.grupo_id;
+            this.form.docente_id = est.docente_id;
+
+            this.$inertia.post('/guardarestudiante', this.form);
+        },
+
+        agregar()
+        {
+            this.form.id='';
+            this.form.nombre='';
+            this.form.apellido_paterno='',
+            this.form.apellido_materno='',
+            this.form.edad='',
+            this.form.grado_id='';
+            this.form.grupo_id='';
+            this.form.docente_id='';
+
+        }
+    }
+}
+</script>

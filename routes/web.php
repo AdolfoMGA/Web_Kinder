@@ -4,6 +4,8 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\EstudiantesController;
+use App\Http\Controllers\GradosController;
+use App\Http\Controllers\GruposController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,4 +45,29 @@ Route::middleware([
         return Inertia::render('Registro_alumnos');
     })->name('registro_a');
 
+    Route::get('/grados', function(){
+        return Inertia::render('grados');
+    })->name('grados');
+
+    Route::get('/grupos', function(){
+        return Inertia::render('grupos');
+    })->name('grupos');
+
+    Route::get('/estudiantes', function(){
+        return Inertia::render('estudiantes');
+    })->name('estudiantes');
+
+
 });
+
+Route::resource('grados',GradosController::class);
+Route::post('/grados', [GradosController::class, 'store'])->name('grados.store');
+Route::put('/grados/{grado}', [GradosController::class, 'update'])->name('grados.update');
+
+Route::resource('grupos',GruposController::class);
+Route::post('/grupos', [GruposController::class, 'store'])->name('grupos.store');
+Route::put('/grupos/{grupo}', [GruposController::class, 'update'])->name('grupos.update');
+
+Route::resource('estudiantes',EstudiantesController::class);
+Route::post('/estudiantes', [EstudiantesController::class, 'store'])->name('estudiantes.store');
+Route::put('/estudiantes/{estudiante}', [EstudiantesController::class, 'update'])->name('estudiantes.update');
