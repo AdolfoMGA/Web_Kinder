@@ -12,4 +12,9 @@ class Grado extends Model
     protected $fillable = [
         'nombre',
     ];
+
+    public function grupos()
+    {
+        return $this->hasMany(Grupo::class); // Un grado tiene muchos grupos
+    }
 }

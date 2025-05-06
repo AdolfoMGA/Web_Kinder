@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/grados/{grado}/grupos/{grupo}/estudiantes', 
+    [RegistroEstudianteController::class, 'getStudentsByGradeAndGroup']
+)->middleware('auth:sanctum');

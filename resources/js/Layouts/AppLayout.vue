@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { Head, Link, router } from '@inertiajs/vue3';
+import { Head, Link, router, usePage } from '@inertiajs/vue3'; // ✅ Asegúrate de importar usePage
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -14,6 +14,9 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 
+const page = usePage();
+const rol_id = page.props.auth.user?.rol_id;
+
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {
         team_id: team.id,
@@ -26,6 +29,7 @@ const logout = () => {
     router.post(route('logout'));
 };
 </script>
+
 
 <template>
     <div>
@@ -53,22 +57,31 @@ const logout = () => {
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Inicio
                                 </NavLink>
-                                <NavLink :href="route('estudiantes.index')" :active="route().current('estudiantes.index')">
+
+                                <!-- Solo para Directivo (rol_id === 1) -->
+                                <NavLink v-if="rol_id === 1" :href="route('estudiantes.index')" :active="route().current('estudiantes.index')">
                                     Estudiantes
                                 </NavLink>
-                                <NavLink :href="route('grados.index')" :active="route().current('grados.index')">
+                                <NavLink v-if="rol_id === 1" :href="route('grados.index')" :active="route().current('grados.index')">
                                     Grados
                                 </NavLink>
-                                <NavLink :href="route('grupos.index')" :active="route().current('grupos.index')">
+                                <NavLink v-if="rol_id === 1" :href="route('grupos.index')" :active="route().current('grupos.index')">
                                     Grupos
                                 </NavLink>
-                                <NavLink :href="route('inicio')" :active="route().current('inicio')">
-                                    Salones
-                                </NavLink>
-                                <NavLink :href="route('docentes.index')" :active="route().current('docentes.index')">
+                                <NavLink v-if="rol_id === 1" :href="route('docentes.index')" :active="route().current('docentes.index')">
                                     Docentes
                                 </NavLink>
-                                
+                                <NavLink v-if="rol_id === 1" :href="route('salones.index')" :active="route().current('salones.index')">
+                                    Salones
+                                </NavLink>
+                                <NavLink v-if="rol_id === 1" :href="route('usuarios.index')" :active="route().current('usuarios.index')">
+                                    Usuarios
+                                </NavLink>
+
+                                <!-- Solo para Docente (rol_id === 2) -->
+                                <NavLink v-if="rol_id === 2" :href="route('docente.registrar.estudiante')" :active="route().current('docente.registrar.estudiante')">
+                                    Registrar Estudiante
+                                </NavLink>
                                 
 
                             </div>
@@ -145,7 +158,7 @@ const logout = () => {
 
                                         <span v-else class="inline-flex rounded-md">
                                             <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
-                                                {{ $page.props.auth.user.name }}
+                                                {{ ['Directivo', 'Docente'][$page.props.auth.user.rol_id - 1] }} {{ $page.props.auth.user.name }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />

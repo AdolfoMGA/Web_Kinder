@@ -7,6 +7,12 @@ use App\Http\Controllers\EstudiantesController;
 use App\Http\Controllers\GradosController;
 use App\Http\Controllers\GruposController;
 use App\Http\Controllers\DocentesController;
+use App\Http\Controllers\RegistroEstudianteController;
+use App\Http\Controllers\AsignarParentescoController;
+use App\Http\Controllers\SalonController;
+use App\Models\Rol;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\FacialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +68,9 @@ Route::middleware([
         return Inertia::render('docentes');
     })->name('docentes');
 
+    Route::get('/RegistrarEstudiante', function(){
+        return Inertia::render('RegistrarEstudiante');
+    })->name('RegistrarEstudiante');
 
 });
 
@@ -80,3 +89,55 @@ Route::put('/estudiantes/{estudiante}', [EstudiantesController::class, 'update']
 Route::resource('docentes',DocentesController::class);
 Route::post('/docentes', [DocentesController::class, 'store'])->name('docentes.store');
 Route::put('/docentes/{docente}', [DocentesController::class, 'update'])->name('docentes.update');
+
+
+Route::post('/asignar-docente', [DocentesController::class, 'asignarDocente'])->name('asignadocentes.store');
+
+Route::post('/estudiantes/parentesco', [EstudiantesController::class, 'storeParentesco'])
+     ->name('asignaparentescos.store'); 
+     
+Route::get('/roles', function () {
+        return Rol::select('id', 'descripcion')->get();
+    });
+     
+Route::get('/tutores/{estudiante}', [AsignarParentescoController::class, 'verTutores'])->name('tutores.byEstudiante');
+Route::delete('/asignaparentescos/{id}', [AsignarParentescoController::class, 'destroy'])
+    ->name('asignaparentescos.destroy');
+Route::get('/asignaparentescos/{id}/edit', [AsignarParentescoController::class, 'edit'])->name('asignaparentescos.edit');
+Route::put('/asignaparentescos/{id}', [AsignarParentescoController::class, 'update'])->name('asignaparentescos.update');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    // Ruta principal para docentes
+    Route::get('/docente/registrar-estudiante', [RegistroEstudianteController::class, 'index'])
+         ->name('docente.registrar.estudiante');
+    
+    // Ruta para filtrar estudiantes (ajustada para coincidir con tu componente)
+    Route::get('/docente/estudiantes/{grado_id}/{grupo_id}', 
+        [RegistroEstudianteController::class, 'getStudentsByGradeAndGroup']
+    )->name('estudiantes.byGradeGroup');
+});
+
+Route::get('/estudiantes/grado/{grado}/grupo/{grupo}', [RegistroEstudianteController::class, 'getStudentsByGradeAndGroup'])
+    ->name('estudiantes.byGradeGroup');
+
+Route::get('/asignaciones', [DocentesController::class, 'index'])->name('asignaciones.index');
+
+Route::resource('salones', \App\Http\Controllers\SalonController::class)
+    ->only(['index', 'store', 'update', 'destroy'])
+    ->names([
+        'index' => 'salones.index',
+        'store' => 'salones.store',
+        'update' => 'salones.update',
+        'destroy' => 'salones.destroy'
+    ]);
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
+        Route::get('/usuarios/create', [UserController::class, 'create'])->name('usuarios.create');
+        Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
+        Route::get('/usuarios/{user}/edit', [UserController::class, 'edit'])->name('usuarios.edit');
+        Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
+        Route::delete('/usuarios/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+    });
+
+Route::post('/facial/run', [FacialController::class, 'run'])->name('facial.run');

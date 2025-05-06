@@ -21,7 +21,6 @@ return new class extends Migration
             $table->integer('edad');
             $table->foreignId('grado_id')->constrained()->onDelete('cascade'); // Relación con Grado
             $table->foreignId('grupo_id')->constrained()->onDelete('cascade'); // Relación con Grupo
-            $table->foreignId('docente_id')->constrained()->onDelete('cascade'); // Relación con Docente
             $table->timestamps(); // created_at, updated_at
         });
     }
